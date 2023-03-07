@@ -3,7 +3,6 @@ const fs = require('fs');
 const React = require('react');
 const ReactDOM = require('react-dom/server');
 const { join } = require('path');
-const El = (...args) => React.createElement(...args);
 
 const tree = {
     path: 'ROOT',
@@ -77,4 +76,4 @@ function Folder({ folder }) {
     </li>;
 }
 
-console.log(ReactDOM.renderToString(El(Folder, { folder: tree})));
+console.log(ReactDOM.renderToString(<Folder folder={tree} />));
