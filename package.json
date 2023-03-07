@@ -1,9 +1,11 @@
 {
   "name": "lineshow",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "description": "",
   "main": "index.js",
-  "bin": "./index.js",
+  "bin": {
+    "lineshow": "index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
