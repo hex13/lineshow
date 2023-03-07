@@ -4,14 +4,16 @@
   "description": "",
   "main": "index.js",
   "bin": {
-    "lineshow": "index.js"
+    "lineshow": "bin/index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "esbuild index.js --loader:.js=jsx --outfile=bin/index.js"
   },
   "author": "= <=>",
   "license": "MIT",
   "dependencies": {
+    "esbuild": "^0.17.11",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }
