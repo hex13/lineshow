@@ -24,7 +24,7 @@ function walk(path) {
     if (kind == 'File') {
         const source = fs.readFileSync(path, 'utf8');
         featurePatterns.forEach(pattern => {
-            if (source.includes(pattern[0])) {
+            if (source.includes(pattern[0]) && !node.features.includes(pattern[1])) {
                 node.features.push(pattern[1]);
             }    
         });
