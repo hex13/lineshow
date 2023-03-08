@@ -6,9 +6,10 @@
   "bin": {
     "lineshow": "bin/index.js"
   },
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "esbuild index.js --loader:.js=jsx --outfile=bin/index.js"
+    "build": "esbuild src/index.js --loader:.js=jsx --outfile=bin/index.js"
   },
   "author": "= <=>",
   "license": "MIT",

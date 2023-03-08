@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-const fs = require('fs');
-const React = require('react');
-const ReactDOM = require('react-dom/server');
-const { join } = require('path');
+import * as fs from 'fs';
+import React from 'react';
+import * as ReactDOM from 'react-dom/server';
+import { join } from 'path';
+
 
 const tree = {
     path: 'ROOT',
@@ -47,6 +48,7 @@ function walk(path) {
 }
 
 walk(config.path);
+
 
 function Loc({ value }) {
     const colors = ['#3b3', '#380', '#fa0', '#f60', '#f00'];
