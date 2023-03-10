@@ -10,6 +10,7 @@ const tree = {
     path: 'ROOT',
     children: [],
 };
+const files = [];
 let curr = tree;
 const ignored = ['node_modules', '.git']
 
@@ -31,6 +32,9 @@ function walk(path) {
             }    
         });
         node.loc = source.split('\n').length;
+        node.source = source;
+        const index = files.push(node) - 1;
+        node.previewPath = `file_${index}.html`;
     }
     curr.children.push(node);
 
@@ -54,4 +58,8 @@ walk(config.path);
 const outDir = 'out/';
 const html = ReactDOM.renderToString(<Folder folder={tree} />);
 fs.writeFileSync(join(outDir, 'index.html'), html, 'utf8');
+
+files.forEach((file) => {
+    fs.writeFileSync(join(outDir, file.previewPath), file.source, 'utf8');
+})
 
