@@ -51,7 +51,7 @@ function walk(path) {
 walk(config.path);
 
 
+const outDir = 'out/';
+const html = ReactDOM.renderToString(<Folder folder={tree} />);
+fs.writeFileSync(join(outDir, 'index.html'), html, 'utf8');
 
-
-
-console.log(ReactDOM.renderToString(<Folder folder={tree} />));
