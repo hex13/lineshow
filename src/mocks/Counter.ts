@@ -3,16 +3,16 @@ export class Counter {
     constructor() {
         this.value = 0;
     }
-    inc() {
-        this.value++;
+    inc(amount) {
+        this.value += amount;
     }
-    dec() {
-        this.value--;
+    dec(amount) {
+        this.value -= amount;
     }
 }
 
 class Nevermind {
-    blah() {
+    blah(foo, bar) {
         
     }
 }

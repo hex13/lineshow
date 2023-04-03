@@ -24,7 +24,6 @@ traverse(ast, {
     ExportNamedDeclaration: {
         enter(path) {
             const { node } = path;
-            
         },
         exit() {
 
@@ -41,7 +40,10 @@ traverse(ast, {
     ClassMethod: {
         enter(path) {},
         exit(path) {
-            classes.at(-1).methods.push({name: path.node.key.name});
+            classes.at(-1).methods.push({
+                name: path.node.key.name,
+                params: path.node.params.map(({name}) => ({name})),
+            });
         }
     }
 
@@ -49,8 +51,17 @@ traverse(ast, {
 
 assert.deepStrictEqual(classes, [
     {
-        name: 'Counter', 
-        methods: [{name: 'constructor'}, {name: 'inc'}, {name: 'dec'}]
+        name: 'Counter',
+        methods: [
+            {name: 'constructor', params: []},
+            {name: 'inc', params: [{name: 'amount'}]},
+            {name: 'dec', params: [{name: 'amount'}]}
+        ]
     },
-    {name: 'Nevermind', methods: [{name: 'blah'}]},
+    {
+        name: 'Nevermind',
+        methods: [
+            {name: 'blah', params: [{name: 'foo'}, {name: 'bar'}]}
+        ]
+    },
 ]);
