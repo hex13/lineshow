@@ -17,6 +17,7 @@ export function analyze(source) {
     const ast = parse(source);
 
     const classes = [];
+    const functions = [];
     traverse(ast, {
         ExportNamedDeclaration: {
             enter(path) {
@@ -42,8 +43,16 @@ export function analyze(source) {
                     params: path.node.params.map(({name}) => ({name})),
                 });
             }
+        },
+        FunctionDeclaration: {
+            exit(path) {
+                functions.push({
+                    name: path.node.id.name,
+                    params: path.node.params.map(({name}) => ({name})),
+                })
+            }
         }
     });
-    return { classes };
+    return { classes, functions };
 
 }

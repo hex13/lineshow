@@ -16,3 +16,7 @@ class Nevermind {
         
     }
 }
+
+function someFunction(someParam, someParam2) {
+
+}

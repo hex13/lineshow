@@ -4,7 +4,7 @@ import { analyze } from './analyze.js';
 
 const source = fs.readFileSync('./mocks/Counter.ts', 'utf8');
 
-const { classes } = analyze(source);
+const { classes, functions } = analyze(source);
 assert.deepStrictEqual(classes, [
     {
         name: 'Counter',
@@ -20,4 +20,8 @@ assert.deepStrictEqual(classes, [
             {name: 'blah', params: [{name: 'foo'}, {name: 'bar'}]}
         ]
     },
+]);
+
+assert.deepStrictEqual(functions, [
+    {name: 'someFunction', params: [{name: 'someParam'}, {name: 'someParam2'}]}
 ]);
