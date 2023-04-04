@@ -66,6 +66,23 @@ const styles = `
 body {
     font-family: Monaco, monospace;
 }
+
+a {
+    text-decoration: none;
+}
+.folder {
+    margin: 8px 0;
+}
+.folder:hover {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0) 32px);
+    outline: 1px solid rgba(0, 0, 100, 0.1);
+}
+.folder-name {
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    background: #ffeecc;
+    padding: 2px;
+}
 ul {
     list-style-type: none;
 }
