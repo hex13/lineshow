@@ -7,6 +7,7 @@ function parse(source) {
         sourceType: 'module',
         plugins: [
             'typescript',
+            'jsx',
         ]
     });
 }
