@@ -4,24 +4,32 @@ import { analyze } from './analyze.js';
 
 const source = fs.readFileSync('./mocks/Counter.ts', 'utf8');
 
-const { classes, functions } = analyze(source);
-assert.deepStrictEqual(classes, [
-    {
-        name: 'Counter',
-        methods: [
-            {name: 'constructor', params: []},
-            {name: 'inc', params: [{name: 'amount'}]},
-            {name: 'dec', params: [{name: 'amount'}]}
-        ]
-    },
-    {
-        name: 'Nevermind',
-        methods: [
-            {name: 'blah', params: [{name: 'foo'}, {name: 'bar'}]}
-        ]
-    },
-]);
+const scope = analyze(source);
 
-assert.deepStrictEqual(functions, [
-    {name: 'someFunction', params: [{name: 'someParam'}, {name: 'someParam2'}]}
-]);
+assert.deepStrictEqual(scope, {
+    bindings: [
+        {
+            kind: 'class',
+            name: 'Counter',
+            methods: [
+                {name: 'constructor', params: []},
+                {name: 'inc', params: [{name: 'amount'}]},
+                {name: 'dec', params: [{name: 'amount'}]}
+            ]
+        },
+    ],
+    innerScopes: [{
+        innerScopes: [],
+        bindings: [
+            {
+                kind: 'class',
+                name: 'Nevermind',
+                methods: [
+                    {name: 'blah', params: [{name: 'foo'}, {name: 'bar'}]}
+                ]
+            },
+            {kind: 'function', name: 'someFunction', params: [{name: 'someParam'}, {name: 'someParam2'}]}
+        ]
+    }],
+
+});

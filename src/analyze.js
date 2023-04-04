@@ -11,25 +11,39 @@ function parse(source) {
     });
 }
 
-
+function Scope() {
+    return {bindings: [], innerScopes: []};
+}
 
 export function analyze(source) {
     const ast = parse(source);
 
-    const classes = [];
-    const functions = [];
+
+    const publicTopScope = new Scope();
+    const privateTopScope = new Scope();
+    publicTopScope.innerScopes.push(privateTopScope);
+    const scopes = [privateTopScope];
+
+    function declareBinding(binding) {
+        scopes.at(-1).bindings.push(binding);
+    }
+    function declareMethod(method) {
+        scopes.at(-1).bindings.at(-1).methods.push(method);
+    }
+
     traverse(ast, {
         ExportNamedDeclaration: {
             enter(path) {
                 const { node } = path;
+                scopes.push(publicTopScope);
             },
             exit() {
-
+                scopes.pop();
             }
         },
         ClassDeclaration: {
             enter(path) {
-                classes.push({name: path.node.id.name, methods: []})
+                declareBinding({kind: 'class', name: path.node.id.name, methods: []});
             },
             exit(path) {
 
@@ -38,7 +52,8 @@ export function analyze(source) {
         ClassMethod: {
             enter(path) {},
             exit(path) {
-                classes.at(-1).methods.push({
+
+                declareMethod({
                     name: path.node.key.name,
                     params: path.node.params.map(({name}) => ({name})),
                 });
@@ -46,13 +61,14 @@ export function analyze(source) {
         },
         FunctionDeclaration: {
             exit(path) {
-                functions.push({
+                declareBinding({
+                    kind: 'function',
                     name: path.node.id.name,
                     params: path.node.params.map(({name}) => ({name})),
                 })
             }
         }
     });
-    return { classes, functions };
+    return publicTopScope;
 
 }
