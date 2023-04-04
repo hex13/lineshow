@@ -4,7 +4,7 @@ import React from 'react';
 import * as ReactDOM from 'react-dom/server';
 import { join } from 'path';
 import { Folder } from './components/Folder.js';
-
+import { analyze } from './analyze.js';
 
 const tree = {
     path: 'ROOT',
@@ -35,6 +35,11 @@ function walk(path) {
         node.source = source;
         const index = files.push(node) - 1;
         node.previewPath = `file_${index}.html`;
+        try {
+            node.scope = analyze(source);
+        } catch (e) {
+
+        }
     }
     curr.children.push(node);
 
@@ -56,7 +61,23 @@ walk(config.path);
 
 
 const outDir = 'out/';
-const html = ReactDOM.renderToString(<Folder folder={tree} />);
+const styles = `
+
+body {
+    font-family: Monaco, monospace;
+}
+ul {
+    list-style-type: none;
+}
+.keyword {
+    color: #a7b;
+}
+
+.param {
+    color: #77b;
+}
+`;
+const html = `<style>${styles}</style>` + ReactDOM.renderToString(<Folder folder={tree} />);
 fs.writeFileSync(join(outDir, 'index.html'), html, 'utf8');
 
 files.forEach((file) => {
