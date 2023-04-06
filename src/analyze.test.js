@@ -1,35 +1,88 @@
 import fs from 'node:fs';
 import assert from 'node:assert';
-import { analyze } from './analyze.js';
+import { analyze, Scope } from './analyze.js';
 
-const source = fs.readFileSync('./mocks/Counter.ts', 'utf8');
+const source = fs.readFileSync('./mocks/scopes.js', 'utf8');
 
 const scope = analyze(source);
-
-assert.deepStrictEqual(scope, {
+const expectedScope = {
     bindings: [
+        {kind: 'function', name: 'exportedFoo', params: []},
         {
-            kind: 'class',
-            name: 'Counter',
-            methods: [
-                {name: 'constructor', params: []},
-                {name: 'inc', params: [{name: 'amount'}]},
-                {name: 'dec', params: [{name: 'amount'}]}
-            ]
+            kind: 'class', 
+            methods: [{name: 'doThat', params: []}], 
+            name: 'PublicClass'
         },
     ],
-    innerScopes: [{
-        innerScopes: [],
-        bindings: [
-            {
-                kind: 'class',
-                name: 'Nevermind',
-                methods: [
-                    {name: 'blah', params: [{name: 'foo'}, {name: 'bar'}]}
-                ]
-            },
-            {kind: 'function', name: 'someFunction', params: [{name: 'someParam'}, {name: 'someParam2'}]}
-        ]
-    }],
+    innerScopes: [
+        {
+            innerScopes: [
+                {
+                    innerScopes: [],
+                    bindings: [
+                        {
+                            kind: 'const',
+                            name: 'a',
+                        }
+                    ]
+                },
+                new Scope([{kind: 'const', name: 'o'}]),
+            ],
+            bindings: [
+                {kind: 'function', name: 'foo', params: []},
+                {
+                    kind: 'class', 
+                    methods: [{name: 'doIt', params: []}], 
+                    name: 'PrivateClass'
+                },
+            ]
+        },
+        new Scope([{kind: 'const', name: 'b'}]),
+        new Scope([]),
+    ]
+};
+assert.deepStrictEqual(scope, expectedScope);
 
-});
+// assert.deepStrictEqual(scope, {
+//     bindings: [
+//         {
+//             kind: 'class',
+//             name: 'Counter',
+//             methods: [
+//                 {name: 'constructor', params: []},
+//                 {name: 'inc', params: [{name: 'amount'}]},
+//                 {name: 'dec', params: [{name: 'amount'}]}
+//             ]
+//         },
+//         {
+//             kind: 'const',
+//             name: 'someObject',
+//         },
+//         {
+//             kind: 'const',
+//             name: 'someNumber',
+//         },
+//     ],
+//     innerScopes: [{
+//         innerScopes: [{
+//             innerScopes: [],
+//             bindings: [{kind: 'const', name: 'year'}],
+//         }],
+//         bindings: [
+//             {
+//                 kind: 'class',
+//                 name: 'Nevermind',
+//                 methods: [
+//                     {name: 'blah', params: [{name: 'foo'}, {name: 'bar'}]}
+//                 ]
+//             },
+//             {kind: 'function', name: 'someFunction', params: [{name: 'someParam'}, {name: 'someParam2'}]},
+//             {
+//                 kind: 'const',
+//                 name: 'someInternalObject',
+//             },
+//         ]
+//     }],
+
+// });
+

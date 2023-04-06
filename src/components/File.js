@@ -11,7 +11,7 @@ function Scope({ scope }) {
             return <li key={i}><Entity entity={binding} /></li>
         })}
         </ul>
-        {scope.innerScopes? scope.innerScopes.map((scope, i) => <div key={i} style={{opacity: 0.5}}><Scope scope={scope} /></div>):null}
+        <ul>{scope.innerScopes? scope.innerScopes.map((scope, i) => <li key={i} style={{opacity: 0.5}}><Scope scope={scope} /></li>):null}</ul>
     </div>
 }
 

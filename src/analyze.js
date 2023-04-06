@@ -12,8 +12,8 @@ function parse(source) {
     });
 }
 
-function Scope() {
-    return {bindings: [], innerScopes: []};
+export function Scope(bindings = []) {
+    return {bindings, innerScopes: []};
 }
 
 export function analyze(source) {
@@ -31,6 +31,14 @@ export function analyze(source) {
     function declareMethod(method) {
         scopes.at(-1).bindings.at(-1).methods.push(method);
     }
+    function enterScope() {
+        const scope = new Scope();
+        scopes.at(-1).innerScopes.push(scope);
+        scopes.push(scope);
+    }
+    function exitScope() {
+        scopes.pop();
+    }
 
     traverse(ast, {
         ExportNamedDeclaration: {
@@ -38,7 +46,7 @@ export function analyze(source) {
                 const { node } = path;
                 scopes.push(publicTopScope);
             },
-            exit() {
+            exit(path) {
                 scopes.pop();
             }
         },
@@ -51,22 +59,36 @@ export function analyze(source) {
             }
         },
         ClassMethod: {
-            enter(path) {},
-            exit(path) {
-
+            enter(path) {
                 declareMethod({
                     name: path.node.key.name,
                     params: path.node.params.map(({name}) => ({name})),
                 });
+                enterScope();
+            },
+            exit(path) {
+                exitScope();
             }
         },
         FunctionDeclaration: {
+            enter(path) {
+                enterScope();
+            },
             exit(path) {
+                exitScope();
                 declareBinding({
                     kind: 'function',
                     name: path.node.id.name,
                     params: path.node.params.map(({name}) => ({name})),
-                })
+                });
+            }
+        },
+        VariableDeclaration: {
+            exit(path) {
+                declareBinding({
+                    kind: path.node.kind,
+                    name: path.node.declarations[0].id.name,
+                });
             }
         }
     });
