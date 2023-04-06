@@ -2,46 +2,51 @@ import fs from 'node:fs';
 import assert from 'node:assert';
 import { analyze, Scope } from './analyze.js';
 
-const source = fs.readFileSync('./mocks/scopes.js', 'utf8');
+const sources = {
+    scopes: fs.readFileSync('./mocks/scopes.js', 'utf8'),
+}
 
-const scope = analyze(source);
-const expectedScope = {
-    bindings: [
-        {kind: 'function', name: 'exportedFoo', params: []},
-        {
-            kind: 'class', 
-            methods: [{name: 'doThat', params: []}], 
-            name: 'PublicClass'
-        },
-    ],
-    innerScopes: [
-        {
-            innerScopes: [
-                {
-                    innerScopes: [],
-                    bindings: [
-                        {
-                            kind: 'const',
-                            name: 'a',
-                        }
-                    ]
-                },
-                new Scope([{kind: 'const', name: 'o'}]),
-            ],
-            bindings: [
-                {kind: 'function', name: 'foo', params: []},
-                {
-                    kind: 'class', 
-                    methods: [{name: 'doIt', params: []}], 
-                    name: 'PrivateClass'
-                },
-            ]
-        },
-        new Scope([{kind: 'const', name: 'b'}]),
-        new Scope([]),
-    ]
-};
-assert.deepStrictEqual(scope, expectedScope);
+it('scopes', () => {
+    const scope = analyze(sources.scopes);
+
+    const expectedScope = {
+        bindings: [
+            {kind: 'function', name: 'exportedFoo', params: []},
+            {
+                kind: 'class',
+                methods: [{name: 'doThat', params: []}],
+                name: 'PublicClass'
+            },
+        ],
+        innerScopes: [
+            {
+                innerScopes: [
+                    {
+                        innerScopes: [],
+                        bindings: [
+                            {
+                                kind: 'const',
+                                name: 'a',
+                            }
+                        ]
+                    },
+                    new Scope([{kind: 'const', name: 'o'}]),
+                ],
+                bindings: [
+                    {kind: 'function', name: 'foo', params: []},
+                    {
+                        kind: 'class',
+                        methods: [{name: 'doIt', params: []}],
+                        name: 'PrivateClass'
+                    },
+                ]
+            },
+            new Scope([{kind: 'const', name: 'b'}]),
+            new Scope([]),
+        ]
+    };
+    assert.deepStrictEqual(scope, expectedScope);
+});
 
 // assert.deepStrictEqual(scope, {
 //     bindings: [
