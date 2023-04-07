@@ -1,16 +1,6 @@
-import { parse as babelParse } from '@babel/parser';
+import { parse } from './parse.js';
 import Traverse from '@babel/traverse';
 const traverse = Traverse.default;
-
-function parse(source) {
-    return babelParse(source, {
-        sourceType: 'module',
-        plugins: [
-            'typescript',
-            'jsx',
-        ]
-    });
-}
 
 export function Scope(bindings = []) {
     return {bindings, innerScopes: []};
